@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --color-nooff-black: #0a0a0a;
+  --color-nooff-graphite: #141414;
+  --color-nooff-dark: #1a1a1a;
+  --color-nooff-card: #1c1c1e;
+  --color-nooff-border: rgba(255, 255, 255, 0.08);
+  --color-nooff-border-hover: rgba(255, 255, 255, 0.15);
+  --color-nooff-red: #c8102e;
+  --color-nooff-red-dark: #a00d24;
+  --color-nooff-red-glow: rgba(200, 16, 46, 0.3);
+  --color-nooff-white: #f5f5f5;
+  --color-nooff-muted: #888888;
+  --color-nooff-warm: #2a2018;
+  --color-nooff-warm-card: #231e18;
+
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-nooff-black);
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: var(--color-nooff-red);
+  color: white;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-nooff-black);
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Hero blob drift — CSS animations run on compositor thread, zero main-thread cost */
+@keyframes blob-drift-1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(60px, 40px); }
+}
+@keyframes blob-drift-2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-50px, -30px); }
+}
+@keyframes blob-drift-3 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(30px, -25px); }
+}
+.hero-blob-1 { animation: blob-drift-1 25s ease-in-out infinite; }
+.hero-blob-2 { animation: blob-drift-2 30s ease-in-out infinite; }
+.hero-blob-3 { animation: blob-drift-3 20s ease-in-out infinite; }
