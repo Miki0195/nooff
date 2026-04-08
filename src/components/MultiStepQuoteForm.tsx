@@ -1,6 +1,13 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useCallback, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import HCaptcha from '@hcaptcha/react-hcaptcha';
 import { useT } from '../i18n/LanguageContext';
+
+const WEB3FORMS_KEY = import.meta.env.VITE_WEB3FORMS_KEY;
+const HCAPTCHA_SITEKEY = import.meta.env.VITE_HCAPTCHA_SITEKEY;
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^\+?[\d\s\-().]{7,20}$/;
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -16,6 +23,8 @@ const slideVariants = {
     opacity: 0,
   }),
 };
+
+const shakeKeyframes = [0, -12, 10, -8, 6, -3, 0];
 
 export default function MultiStepQuoteForm() {
   const t = useT();
@@ -39,36 +48,131 @@ export default function MultiStepQuoteForm() {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
-  const [errors, setErrors] = useState<{ name?: string; email?: string }>({});
+  const [errors, setErrors] = useState<{ name?: string; email?: string; phone?: string }>({});
+  const [submitError, setSubmitError] = useState(false);
+  const [stepError, setStepError] = useState('');
+  const [hcaptchaToken, setHcaptchaToken] = useState('');
+  const captchaRef = useRef<HCaptcha>(null);
+
+  const shakeControls = useAnimation();
+
+  useEffect(() => {
+    shakeControls.start({ opacity: 1, y: 0, transition: { duration: 0.4 } });
+  }, [shakeControls]);
+
+  const triggerShake = useCallback((msg: string) => {
+    setStepError(msg);
+    shakeControls.start({
+      x: shakeKeyframes,
+      transition: { duration: 0.5, ease: 'easeInOut' },
+    });
+  }, [shakeControls]);
+
+  const clearStepError = useCallback(() => {
+    if (stepError) setStepError('');
+  }, [stepError]);
 
   const toggleService = (s: string) => {
     setServices((prev) =>
       prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
     );
+    clearStepError();
+  };
+
+  const handleSubmit = async () => {
+    const newErrors: { name?: string; email?: string; phone?: string } = {};
+    if (!name.trim()) newErrors.name = t.form.required;
+    if (!email.trim()) {
+      newErrors.email = t.form.required;
+    } else if (!EMAIL_RE.test(email.trim())) {
+      newErrors.email = t.form.invalidEmail;
+    }
+    if (phone.trim() && !PHONE_RE.test(phone.trim())) {
+      newErrors.phone = t.form.invalidPhone;
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      triggerShake(t.form.step6Required);
+      return;
+    }
+    if (!hcaptchaToken) {
+      triggerShake(t.form.captchaRequired);
+      return;
+    }
+    setErrors({});
+    setStepError('');
+    setSubmitError(false);
+    setIsSubmitting(true);
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          'h-captcha-response': hcaptchaToken,
+          subject: `Új ajánlatkérés: ${name}`,
+          from_name: 'NO OFF Studio weboldal',
+          name,
+          email,
+          phone: phone || '–',
+          services: services.join(', ') || '–',
+          business_type: businessType || '–',
+          project_description: projectDesc || '–',
+          budget: budget || '–',
+          timeline: timeline || '–',
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setIsSuccess(true);
+      } else {
+        setSubmitError(true);
+      }
+    } catch {
+      setSubmitError(true);
+    } finally {
+      setIsSubmitting(false);
+      setHcaptchaToken('');
+      captchaRef.current?.resetCaptcha();
+    }
+  };
+
+  const validateStep = (): boolean => {
+    switch (step) {
+      case 1:
+        if (services.length === 0) { triggerShake(t.form.step1Required); return false; }
+        break;
+      case 2:
+        if (!businessType) { triggerShake(t.form.step2Required); return false; }
+        break;
+      case 3:
+        if (!projectDesc.trim()) { triggerShake(t.form.step3Required); return false; }
+        break;
+      case 4:
+        if (!budget) { triggerShake(t.form.step4Required); return false; }
+        break;
+      case 5:
+        if (!timeline) { triggerShake(t.form.step5Required); return false; }
+        break;
+    }
+    return true;
   };
 
   const goNext = () => {
     if (step === 6) {
-      const newErrors: { name?: string; email?: string } = {};
-      if (!name.trim()) newErrors.name = t.form.required;
-      if (!email.trim()) newErrors.email = t.form.required;
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors);
-        return;
-      }
-      setErrors({});
-      setIsSubmitting(true);
-      setTimeout(() => {
-        setIsSubmitting(false);
-        setIsSuccess(true);
-      }, 1500);
+      handleSubmit();
       return;
     }
+    if (!validateStep()) return;
+    setStepError('');
     setDirection(1);
     setStep((s) => s + 1);
   };
 
   const goBack = () => {
+    setStepError('');
     setDirection(-1);
     setStep((s) => s - 1);
   };
@@ -148,8 +252,7 @@ export default function MultiStepQuoteForm() {
         <motion.div
           className="mt-10 bg-[#1c1c1e] rounded-2xl p-8 md:p-12 border border-[rgba(255,255,255,0.08)]"
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+          animate={shakeControls}
         >
           {/* Progress bar */}
           <div className="mb-10">
@@ -195,6 +298,30 @@ export default function MultiStepQuoteForm() {
               <p className="mt-4 text-[#888888]" style={{ fontFamily: "'Inter', sans-serif" }}>
                 {t.form.sending}
               </p>
+            </div>
+          ) : submitError ? (
+            <div className="py-12 flex flex-col items-center justify-center text-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-[#c8102e]/20 flex items-center justify-center">
+                <svg className="w-7 h-7 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <p className="text-[#f5f5f5] font-semibold text-lg mb-2" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>
+                {t.form.errorTitle}
+              </p>
+              <p className="text-[#888888] text-sm mb-6" style={{ fontFamily: "'Inter', sans-serif" }}>
+                {t.form.errorSubtitle}
+              </p>
+              <motion.button
+                type="button"
+                onClick={() => { setSubmitError(false); handleSubmit(); }}
+                className="px-6 py-3 rounded-lg font-semibold text-white bg-[#c8102e] hover:bg-[#a00d24] transition-colors"
+                style={{ fontFamily: "'Inter', sans-serif" }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                {t.form.retry}
+              </motion.button>
             </div>
           ) : (
             <>
@@ -251,7 +378,7 @@ export default function MultiStepQuoteForm() {
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => setBusinessType(opt)}
+                            onClick={() => { setBusinessType(opt); clearStepError(); }}
                             className={`${optionCardBase} w-full ${
                               businessType === opt
                                 ? 'border-[#c8102e] bg-[#c8102e]/10 text-[#f5f5f5]'
@@ -277,7 +404,7 @@ export default function MultiStepQuoteForm() {
                       </h3>
                       <textarea
                         value={projectDesc}
-                        onChange={(e) => setProjectDesc(e.target.value)}
+                        onChange={(e) => { setProjectDesc(e.target.value); clearStepError(); }}
                         placeholder={t.form.step3Placeholder}
                         rows={5}
                         className={`${inputBase} resize-none`}
@@ -300,7 +427,7 @@ export default function MultiStepQuoteForm() {
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => setBudget(opt)}
+                            onClick={() => { setBudget(opt); clearStepError(); }}
                             className={`${optionCardBase} w-full ${
                               budget === opt
                                 ? 'border-[#c8102e] bg-[#c8102e]/10 text-[#f5f5f5]'
@@ -329,7 +456,7 @@ export default function MultiStepQuoteForm() {
                           <button
                             key={opt}
                             type="button"
-                            onClick={() => setTimeline(opt)}
+                            onClick={() => { setTimeline(opt); clearStepError(); }}
                             className={`${optionCardBase} w-full ${
                               timeline === opt
                                 ? 'border-[#c8102e] bg-[#c8102e]/10 text-[#f5f5f5]'
@@ -363,6 +490,7 @@ export default function MultiStepQuoteForm() {
                             value={name}
                             onChange={(e) => {
                               setName(e.target.value);
+                              clearStepError();
                               if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
                             }}
                             className={`${inputBase} ${errors.name ? 'border-[#c8102e]' : ''}`}
@@ -382,6 +510,7 @@ export default function MultiStepQuoteForm() {
                             value={email}
                             onChange={(e) => {
                               setEmail(e.target.value);
+                              clearStepError();
                               if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
                             }}
                             className={`${inputBase} ${errors.email ? 'border-[#c8102e]' : ''}`}
@@ -399,16 +528,52 @@ export default function MultiStepQuoteForm() {
                           <input
                             type="tel"
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            className={inputBase}
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                              if (errors.phone) setErrors((prev) => ({ ...prev, phone: undefined }));
+                            }}
+                            className={`${inputBase} ${errors.phone ? 'border-[#c8102e]' : ''}`}
                             placeholder={t.form.phonePlaceholder}
                             style={{ fontFamily: "'Inter', sans-serif" }}
+                          />
+                          {errors.phone && (
+                            <p className="mt-1 text-sm text-[#c8102e]">{errors.phone}</p>
+                          )}
+                        </div>
+                        <div className="pt-2">
+                          <HCaptcha
+                            ref={captchaRef}
+                            sitekey={HCAPTCHA_SITEKEY}
+                            theme="dark"
+                            onVerify={(token) => { setHcaptchaToken(token); clearStepError(); }}
+                            onExpire={() => setHcaptchaToken('')}
                           />
                         </div>
                       </div>
                     </div>
                   )}
                 </motion.div>
+              </AnimatePresence>
+
+              <AnimatePresence>
+                {stepError && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="mt-4 flex items-center gap-3 px-4 py-3 rounded-xl bg-[#c8102e]/10 border border-[#c8102e]/20"
+                  >
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#c8102e]/20 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-[#c8102e]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01" />
+                      </svg>
+                    </div>
+                    <p className="text-sm text-[#c8102e]/90" style={{ fontFamily: "'Inter', sans-serif" }}>
+                      {stepError}
+                    </p>
+                  </motion.div>
+                )}
               </AnimatePresence>
 
               {/* Navigation */}

@@ -3,7 +3,7 @@ import type { Translations } from '../i18n/translations';
 export interface ServicePackage {
   name: string;
   subtitle?: string;
-  price: string;
+  // price: string;
   features?: string[];
   highlight?: boolean;
 }
@@ -24,7 +24,8 @@ export interface ServiceDetail {
   warm: boolean;
   packages?: ServicePackage[];
   subCategories?: ServiceSubCategory[];
-  addOns?: { name: string; price: string }[];
+  // addOns?: { name: string; price: string }[];
+  addOns?: { name: string; }[];
 }
 
 const PRICES = {
@@ -50,7 +51,7 @@ export function getServicesData(t: Translations): ServiceDetail[] {
       packages: t.services.content.packages.map((pkg, i) => ({
         name: pkg.name,
         subtitle: pkg.subtitle,
-        price: PRICES.content[i],
+        // price: PRICES.content[i],
         features: pkg.features,
         highlight: i === 1,
       })),
@@ -65,7 +66,7 @@ export function getServicesData(t: Translations): ServiceDetail[] {
       warm: false,
       packages: t.services.promo.packages.map((pkg, i) => ({
         name: pkg.name,
-        price: PRICES.promo[i],
+        // price: PRICES.promo[i],
         features: pkg.features,
         highlight: i === 1,
       })),
@@ -81,7 +82,7 @@ export function getServicesData(t: Translations): ServiceDetail[] {
       packages: t.services.wedding.packages.map((pkg, i) => ({
         name: pkg.name,
         subtitle: pkg.subtitle,
-        price: PRICES.wedding[i],
+        // price: PRICES.wedding[i],
         highlight: i === 1,
       })),
     },
@@ -95,14 +96,14 @@ export function getServicesData(t: Translations): ServiceDetail[] {
       warm: false,
       subCategories: t.services.web.subCategories.map((sub, si) => {
         const slugs = ['bemutatkozo', 'landing', 'ceges', 'webshop'] as const;
-        const priceKeys = ['bemutatkozo', 'landing', 'ceges', 'webshop'] as const;
+        // const priceKeys = ['bemutatkozo', 'landing', 'ceges', 'webshop'] as const;
         return {
           name: sub.name,
           slug: slugs[si],
           packages: sub.packages.map((pkg, pi) => ({
             name: pkg.name,
             subtitle: pkg.subtitle,
-            price: PRICES[priceKeys[si]][pi],
+            // price: PRICES[priceKeys[si]][pi],
             features: pkg.features,
             highlight: pi === 1,
           })),

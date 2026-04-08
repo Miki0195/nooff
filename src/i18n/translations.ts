@@ -70,6 +70,18 @@ export interface Translations {
     sending: string;
     successTitle: string;
     successSubtitle: string;
+    errorTitle: string;
+    errorSubtitle: string;
+    retry: string;
+    step1Required: string;
+    step2Required: string;
+    step3Required: string;
+    step4Required: string;
+    step5Required: string;
+    step6Required: string;
+    invalidEmail: string;
+    invalidPhone: string;
+    captchaRequired: string;
   };
   footer: {
     services: string;
@@ -221,6 +233,18 @@ const hu: Translations = {
     sending: 'Küldés...',
     successTitle: 'Megkaptuk.',
     successSubtitle: 'Hamarosan jelentkezünk.',
+    errorTitle: 'Hiba történt.',
+    errorSubtitle: 'Kérjük próbáld újra, vagy írj nekünk közvetlenül: hello@nooff-studio.com',
+    retry: 'Újrapróbálás',
+    step1Required: 'Válassz legalább egy szolgáltatást a továbblépéshez.',
+    step2Required: 'Válaszd ki a céged típusát a továbblépéshez.',
+    step3Required: 'Kérjük, írd le röviden a projektet.',
+    step4Required: 'Válassz költségkeretet a továbblépéshez.',
+    step5Required: 'Válaszd ki az időzítést a továbblépéshez.',
+    step6Required: 'Kérjük, töltsd ki a kötelező mezőket.',
+    invalidEmail: 'Kérjük, adj meg egy érvényes email címet.',
+    invalidPhone: 'Kérjük, adj meg egy érvényes telefonszámot (pl. +36 30 123 4567).',
+    captchaRequired: 'Kérjük, igazold, hogy nem vagy robot.',
   },
   footer: {
     services: 'Szolgáltatások',
@@ -414,6 +438,18 @@ const en: Translations = {
     sending: 'Sending...',
     successTitle: 'Received.',
     successSubtitle: 'We\'ll get back to you soon.',
+    errorTitle: 'Something went wrong.',
+    errorSubtitle: 'Please try again or contact us directly at hello@nooff-studio.com',
+    retry: 'Try again',
+    step1Required: 'Please select at least one service to continue.',
+    step2Required: 'Please choose your business type to continue.',
+    step3Required: 'Please describe your project briefly.',
+    step4Required: 'Please select a budget range to continue.',
+    step5Required: 'Please choose a timeline to continue.',
+    step6Required: 'Please fill in the required fields.',
+    invalidEmail: 'Please enter a valid email address.',
+    invalidPhone: 'Please enter a valid phone number (e.g. +36 30 123 4567).',
+    captchaRequired: 'Please verify that you are not a robot.',
   },
   footer: {
     services: 'Services',
@@ -607,6 +643,18 @@ const de: Translations = {
     sending: 'Wird gesendet...',
     successTitle: 'Erhalten.',
     successSubtitle: 'Wir melden uns bald.',
+    errorTitle: 'Ein Fehler ist aufgetreten.',
+    errorSubtitle: 'Bitte versuche es erneut oder schreibe uns direkt an hello@nooff-studio.com',
+    retry: 'Erneut versuchen',
+    step1Required: 'Bitte wähle mindestens eine Leistung aus.',
+    step2Required: 'Bitte wähle deinen Unternehmenstyp aus.',
+    step3Required: 'Bitte beschreibe dein Projekt kurz.',
+    step4Required: 'Bitte wähle ein Budget aus.',
+    step5Required: 'Bitte wähle einen Zeitrahmen aus.',
+    step6Required: 'Bitte fülle die Pflichtfelder aus.',
+    invalidEmail: 'Bitte gib eine gültige E-Mail-Adresse ein.',
+    invalidPhone: 'Bitte gib eine gültige Telefonnummer ein (z.B. +49 170 123 4567).',
+    captchaRequired: 'Bitte bestätige, dass du kein Roboter bist.',
   },
   footer: {
     services: 'Leistungen',
@@ -800,6 +848,18 @@ const sk: Translations = {
     sending: 'Odosiela sa...',
     successTitle: 'Prijaté.',
     successSubtitle: 'Čoskoro sa ozveme.',
+    errorTitle: 'Vyskytla sa chyba.',
+    errorSubtitle: 'Skús to znova alebo nám napíš priamo na hello@nooff-studio.com',
+    retry: 'Skúsiť znova',
+    step1Required: 'Vyber aspoň jednu službu na pokračovanie.',
+    step2Required: 'Vyber typ svojej firmy na pokračovanie.',
+    step3Required: 'Prosím, stručne opíš svoj projekt.',
+    step4Required: 'Vyber rozpočet na pokračovanie.',
+    step5Required: 'Vyber časový rámec na pokračovanie.',
+    step6Required: 'Prosím, vyplň povinné polia.',
+    invalidEmail: 'Prosím, zadaj platnú emailovú adresu.',
+    invalidPhone: 'Prosím, zadaj platné telefónne číslo (napr. +421 900 123 456).',
+    captchaRequired: 'Prosím, over, že nie si robot.',
   },
   footer: {
     services: 'Služby',
