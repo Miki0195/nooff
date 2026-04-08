@@ -137,14 +137,14 @@ function PackageCard({
         </div>
 
         {/* Price */}
-        <div className="mt-6 mb-6">
+        {/* <div className="mt-6 mb-6">
           <span
             className="text-2xl md:text-3xl font-bold text-[#f5f5f5]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {pkg.price}
           </span>
-        </div>
+        </div> */}
 
         {/* Divider */}
         <div className="h-px bg-gradient-to-r from-[rgba(255,255,255,0.04)] via-[rgba(255,255,255,0.08)] to-[rgba(255,255,255,0.04)] mb-6" />
@@ -453,12 +453,12 @@ export default function ServiceDetailPage() {
                   >
                     {addon.name}
                   </span>
-                  <span
+                  {/* <span
                     className="text-sm font-semibold text-[#c8102e] whitespace-nowrap"
                     style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                   >
                     {addon.price}
-                  </span>
+                  </span> */}
                 </motion.div>
               ))}
             </motion.div>

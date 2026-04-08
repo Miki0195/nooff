@@ -28,15 +28,15 @@ export interface ServiceDetail {
   addOns?: { name: string; }[];
 }
 
-const PRICES = {
-  content: ['160.000 Ft', '280.000 – 320.000 Ft', '360.000 – 480.000 Ft', '650.000 – 780.000 Ft'],
-  promo: ['120.000 – 150.000 Ft', '180.000 – 220.000 Ft', '260.000 – 320.000 Ft', '350.000 Ft-tól'],
-  wedding: ['260.000 – 300.000 Ft', '320.000 – 380.000 Ft', '420.000 – 480.000 Ft'],
-  bemutatkozo: ['160.000 Ft', '190.000 Ft', '220.000 Ft'],
-  landing: ['280.000 Ft', '330.000 Ft', '380.000 Ft'],
-  ceges: ['590.000 Ft', '740.000 Ft', '920.000 Ft'],
-  webshop: ['1.290.000 Ft', '1.890.000 Ft', '2.590.000 Ft'],
-};
+// const PRICES = {
+//   content: ['160.000 Ft', '280.000 – 320.000 Ft', '360.000 – 480.000 Ft', '650.000 – 780.000 Ft'],
+//   promo: ['120.000 – 150.000 Ft', '180.000 – 220.000 Ft', '260.000 – 320.000 Ft', '350.000 Ft-tól'],
+//   wedding: ['260.000 – 300.000 Ft', '320.000 – 380.000 Ft', '420.000 – 480.000 Ft'],
+//   bemutatkozo: ['160.000 Ft', '190.000 Ft', '220.000 Ft'],
+//   landing: ['280.000 Ft', '330.000 Ft', '380.000 Ft'],
+//   ceges: ['590.000 Ft', '740.000 Ft', '920.000 Ft'],
+//   webshop: ['1.290.000 Ft', '1.890.000 Ft', '2.590.000 Ft'],
+// };
 
 export function getServicesData(t: Translations): ServiceDetail[] {
   return [
