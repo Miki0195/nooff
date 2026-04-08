@@ -1,3 +1,5 @@
+import { useT } from '../i18n/LanguageContext';
+
 const LOGOS = [
   { name: 'Gymtronic', weight: 700, spacing: '0.02em' },
   { name: 'Hotel Aurum', weight: 500, spacing: '0.08em' },
@@ -55,6 +57,8 @@ function MarqueeRow() {
 }
 
 export default function LogoMarqueeSection() {
+  const t = useT();
+
   return (
     <section
       className="relative overflow-hidden bg-[#0a0a0a] py-16 md:py-24"
@@ -68,7 +72,7 @@ export default function LogoMarqueeSection() {
         className="mb-8 text-center text-xs md:text-sm text-[#888888] tracking-[0.15em] uppercase"
         style={{ fontFamily: "'Inter', sans-serif" }}
       >
-        Akikkel dolgoztunk
+        {t.logoMarquee.label}
       </p>
 
       {/* Marquee container - pause on hover */}

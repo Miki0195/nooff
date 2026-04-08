@@ -1,9 +1,5 @@
-const FOOTER_LINKS = [
-  { label: 'Szolgáltatások', href: '#services' },
-  { label: 'Projektek', href: '#projects' },
-  { label: 'Rólunk', href: '#about' },
-  { label: 'Kapcsolat', href: '#contact' },
-] as const;
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useT } from '../i18n/LanguageContext';
 
 const SOCIAL_LINKS = [
   { name: 'Instagram', href: '#', icon: InstagramIcon },
@@ -45,6 +41,27 @@ function TikTokIcon({ className }: { className?: string }) {
 }
 
 export default function Footer() {
+  const t = useT();
+  const footerLinks = [
+    { label: t.footer.services, href: '#services' },
+    { label: t.footer.projects, href: '#projects' },
+    { label: t.footer.about, href: '#about' },
+    { label: t.footer.contact, href: '#contact' },
+  ];
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isHome = location.pathname === '/';
+
+  function handleFooterNav(href: string) {
+    if (isHome) {
+      const element = document.querySelector(href);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/' + href);
+    }
+  }
+
   return (
     <footer
       className="py-16 md:py-20 bg-[#0a0a0a] border-t border-[rgba(255,255,255,0.08)]"
@@ -52,9 +69,11 @@ export default function Footer() {
     >
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
-          {/* Left column - Logo */}
           <div>
-            <div className="flex flex-col">
+            <button
+              onClick={() => isHome ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate('/')}
+              className="flex flex-col text-left"
+            >
               <span
                 className="font-bold text-2xl tracking-tight"
                 style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -65,35 +84,33 @@ export default function Footer() {
               <span className="text-xs tracking-[0.15em] text-[#888888] uppercase mt-0.5">
                 STUDIO
               </span>
-            </div>
+            </button>
             <p className="mt-4 text-sm text-[#888888]">
               NO OFF Studio — Always On.
             </p>
           </div>
 
-          {/* Middle column - Quick links */}
           <div>
             <h4 className="text-xs font-semibold tracking-wider text-[#888888] uppercase mb-4">
-              Gyors linkek
+              {t.footer.quickLinks}
             </h4>
             <ul className="space-y-3">
-              {FOOTER_LINKS.map((link) => (
+              {footerLinks.map((link) => (
                 <li key={link.href}>
-                  <a
-                    href={link.href}
+                  <button
+                    onClick={() => handleFooterNav(link.href)}
                     className="text-sm text-[#888888] hover:text-[#f5f5f5] transition-colors duration-200"
                   >
                     {link.label}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Right column - Contact & Social */}
           <div>
             <h4 className="text-xs font-semibold tracking-wider text-[#888888] uppercase mb-4">
-              Kapcsolat
+              {t.footer.contactTitle}
             </h4>
             <a
               href="mailto:hello@nooffstudio.hu"
@@ -122,24 +139,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-[rgba(255,255,255,0.08)]">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-xs text-[#888888]">
-              © 2026 NO OFF Studio. Minden jog fenntartva.
+              {t.footer.copyright}
             </p>
             <div className="flex items-center gap-6">
               <a
                 href="#"
                 className="text-xs text-[#888888] hover:text-[#f5f5f5] transition-colors duration-200"
               >
-                Impresszum
+                {t.footer.imprint}
               </a>
               <a
                 href="#"
                 className="text-xs text-[#888888] hover:text-[#f5f5f5] transition-colors duration-200"
               >
-                Adatvédelem
+                {t.footer.privacy}
               </a>
             </div>
           </div>

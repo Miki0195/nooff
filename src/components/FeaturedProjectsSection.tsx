@@ -1,48 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-
-const projects = [
-  {
-    id: 'gymtronic',
-    name: 'Gymtronic',
-    category: 'Social Content + Performance',
-    tag: 'Havi tartalomgyártás',
-    description:
-      'Havi szintű social tartalomgyártás egy dinamikus fitnesz brandnek — videó, reel, fotó, egységes vizuális rendszerben.',
-    gradient:
-      'linear-gradient(135deg, #0a0a0a 0%, rgba(200, 16, 46, 0.15) 40%, rgba(220, 80, 50, 0.12) 100%)',
-  },
-  {
-    id: 'hotel-aurum',
-    name: 'Hotel Aurum',
-    category: 'Brand Film + Web Refresh',
-    tag: 'Marketing videó + Web',
-    description:
-      'Prémium brand film és komplett weboldal újratervezés egy boutique hotelnek a Balaton-felvidéken.',
-    gradient:
-      'linear-gradient(135deg, #0a0a0a 0%, rgba(212, 175, 55, 0.12) 50%, rgba(184, 134, 11, 0.08) 100%)',
-  },
-  {
-    id: 'bistro-nine',
-    name: 'Bistro Nine',
-    category: 'Restaurant Promo Content',
-    tag: 'Promóciós tartalom',
-    description:
-      'Étterem promóciós tartalom, ami nemcsak szép — hanem vendéget hoz.',
-    gradient:
-      'linear-gradient(135deg, #0a0a0a 0%, rgba(205, 133, 63, 0.14) 40%, rgba(139, 90, 43, 0.1) 100%)',
-  },
-  {
-    id: 'dora-mark',
-    name: 'Dóra & Márk',
-    category: 'Cinematic Wedding Film',
-    tag: 'Esküvői film',
-    description:
-      'Filmszerű esküvői highlights, ami nem egy slideshow — hanem egy történet.',
-    gradient:
-      'linear-gradient(135deg, #0a0a0a 0%, rgba(255, 182, 193, 0.1) 40%, rgba(219, 112, 147, 0.08) 100%)',
-  },
-] as const;
+import { useT } from '../i18n/LanguageContext';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -67,7 +25,16 @@ const cardVariants = {
   },
 };
 
-function ProjectCard({ project }: { project: (typeof projects)[number] }) {
+type ProjectWithGradient = {
+  id: string;
+  name: string;
+  category: string;
+  tag: string;
+  description: string;
+  gradient: string;
+};
+
+function ProjectCard({ project, viewProjectLabel }: { project: ProjectWithGradient; viewProjectLabel: string }) {
   return (
     <motion.article
       variants={cardVariants}
@@ -76,7 +43,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
       <a
         href={`#${project.id}`}
         className="block"
-        aria-label={`${project.name} projekt megtekintése`}
+        aria-label={project.name}
       >
         <div className="rounded-xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-[#1c1c1e] transition-colors duration-300 hover:border-[rgba(255,255,255,0.12)]">
           {/* Image area with gradient placeholder */}
@@ -120,7 +87,7 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
                 color: '#f5f5f5',
               }}
             >
-              Projekt megtekintése
+              {viewProjectLabel}
               <svg
                 width="16"
                 height="16"
@@ -143,6 +110,15 @@ function ProjectCard({ project }: { project: (typeof projects)[number] }) {
 }
 
 export default function FeaturedProjectsSection() {
+  const t = useT();
+  const GRADIENTS = [
+    'linear-gradient(135deg, #0a0a0a 0%, rgba(200, 16, 46, 0.15) 40%, rgba(220, 80, 50, 0.12) 100%)',
+    'linear-gradient(135deg, #0a0a0a 0%, rgba(212, 175, 55, 0.12) 50%, rgba(184, 134, 11, 0.08) 100%)',
+    'linear-gradient(135deg, #0a0a0a 0%, rgba(205, 133, 63, 0.14) 40%, rgba(139, 90, 43, 0.1) 100%)',
+    'linear-gradient(135deg, #0a0a0a 0%, rgba(255, 182, 193, 0.1) 40%, rgba(219, 112, 147, 0.08) 100%)',
+  ];
+  const projects = t.projects.items.map((item, i) => ({ ...item, gradient: GRADIENTS[i] }));
+
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, {
     once: true,
@@ -171,13 +147,13 @@ export default function FeaturedProjectsSection() {
             className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#f5f5f5] leading-tight"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            Így néz ki, amikor valami tényleg működik.
+            {t.projects.title}
           </h2>
           <p
             className="mt-4 text-lg text-[#888888]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Nem stock. Nem demo. Ezekkel már kint vagyunk a piacon.
+            {t.projects.subtitle}
           </p>
         </motion.header>
 
@@ -190,20 +166,20 @@ export default function FeaturedProjectsSection() {
         >
           {/* First project: large, full width */}
           <div className="md:col-span-12">
-            <ProjectCard project={projects[0]} />
+            <ProjectCard project={projects[0]} viewProjectLabel={t.projects.viewProject} />
           </div>
 
           {/* Second and third: side by side, smaller */}
           <div className="md:col-span-6">
-            <ProjectCard project={projects[1]} />
+            <ProjectCard project={projects[1]} viewProjectLabel={t.projects.viewProject} />
           </div>
           <div className="md:col-span-6">
-            <ProjectCard project={projects[2]} />
+            <ProjectCard project={projects[2]} viewProjectLabel={t.projects.viewProject} />
           </div>
 
           {/* Fourth: medium width, centered */}
           <div className="md:col-span-8 md:col-start-3">
-            <ProjectCard project={projects[3]} />
+            <ProjectCard project={projects[3]} viewProjectLabel={t.projects.viewProject} />
           </div>
         </motion.div>
       </div>

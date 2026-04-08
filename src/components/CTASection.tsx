@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useT } from '../i18n/LanguageContext';
 
 function scrollToQuote() {
   const element = document.querySelector('#quote');
@@ -28,6 +29,7 @@ const itemVariants = {
 };
 
 export default function CTASection() {
+  const t = useT();
   return (
     <section
       className="py-24 md:py-32 px-6 md:px-10 relative overflow-hidden"
@@ -58,7 +60,7 @@ export default function CTASection() {
           className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[#f5f5f5]"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          Ha komolyan gondolod, induljunk.
+          {t.cta.title}
         </motion.h2>
 
         {/* Secondary text */}
@@ -71,21 +73,21 @@ export default function CTASection() {
             className="text-lg md:text-xl text-[#888888]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Mi nem kampányokat csinálunk.
+            {t.cta.line1}
           </motion.p>
           <motion.p
             variants={itemVariants}
             className="text-lg md:text-xl text-[#888888]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Rendszert építünk.
+            {t.cta.line2}
           </motion.p>
           <motion.p
             variants={itemVariants}
             className="text-lg md:text-xl font-bold text-[#c8102e]"
             style={{ fontFamily: "'Inter', sans-serif" }}
           >
-            Never Off. Always On.
+            {t.cta.tagline}
           </motion.p>
         </motion.div>
 
@@ -114,7 +116,7 @@ export default function CTASection() {
             }}
             whileTap={{ scale: 0.98 }}
           >
-            Ajánlatot kérek
+            {t.cta.quoteBtn}
           </motion.button>
         </motion.div>
       </motion.div>

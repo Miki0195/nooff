@@ -1,44 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const STEPS = [
-  { id: 1, label: 'Szolgáltatás' },
-  { id: 2, label: 'Cég típusa' },
-  { id: 3, label: 'Projekt' },
-  { id: 4, label: 'Költségkeret' },
-  { id: 5, label: 'Időzítés' },
-  { id: 6, label: 'Elérhetőség' },
-] as const;
-
-const STEP_1_OPTIONS = [
-  'Havi tartalomgyártás',
-  'Marketing videó',
-  'Weboldal',
-  'Esküvői film',
-  'Több is érdekel',
-] as const;
-
-const STEP_2_OPTIONS = [
-  'Étterem',
-  'Szálloda',
-  'Edzőterem',
-  'Helyi vállalkozás',
-  'Egyéb',
-] as const;
-
-const STEP_4_OPTIONS = [
-  '300k alatt',
-  '300k–800k',
-  '800k–1.5M',
-  '1.5M+',
-] as const;
-
-const STEP_5_OPTIONS = [
-  'ASAP',
-  '1 hónapon belül',
-  '1–3 hónap',
-  'Rugalmas',
-] as const;
+import { useT } from '../i18n/LanguageContext';
 
 const slideVariants = {
   enter: (direction: number) => ({
@@ -56,6 +18,13 @@ const slideVariants = {
 };
 
 export default function MultiStepQuoteForm() {
+  const t = useT();
+  const steps = t.form.steps.map((label, i) => ({ id: i + 1, label }));
+  const step1Options = t.form.step1Options;
+  const step2Options = t.form.step2Options;
+  const step4Options = t.form.step4Options;
+  const step5Options = t.form.step5Options;
+
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -81,8 +50,8 @@ export default function MultiStepQuoteForm() {
   const goNext = () => {
     if (step === 6) {
       const newErrors: { name?: string; email?: string } = {};
-      if (!name.trim()) newErrors.name = 'Kötelező';
-      if (!email.trim()) newErrors.email = 'Kötelező';
+      if (!name.trim()) newErrors.name = t.form.required;
+      if (!email.trim()) newErrors.email = t.form.required;
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         return;
@@ -149,10 +118,10 @@ export default function MultiStepQuoteForm() {
               className="text-3xl md:text-4xl font-bold text-[#f5f5f5]"
               style={{ fontFamily: "'Space Grotesk', sans-serif" }}
             >
-              Megkaptuk.
+              {t.form.successTitle}
             </h2>
             <p className="mt-3 text-[#888888]" style={{ fontFamily: "'Inter', sans-serif" }}>
-              Hamarosan jelentkezünk.
+              {t.form.successSubtitle}
             </p>
           </motion.div>
         </div>
@@ -167,13 +136,13 @@ export default function MultiStepQuoteForm() {
           className="text-3xl md:text-4xl font-bold text-[#f5f5f5] text-center"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
-          Kérj ajánlatot
+          {t.form.title}
         </h2>
         <p
           className="mt-2 text-center text-[#888888]"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          Pár lépés, és máris visszajelzünk.
+          {t.form.subtitle}
         </p>
 
         <motion.div
@@ -186,7 +155,7 @@ export default function MultiStepQuoteForm() {
           <div className="mb-10">
             <div className="flex justify-between items-center mb-3">
               <span className="text-sm text-[#888888]" style={{ fontFamily: "'Inter', sans-serif" }}>
-                {STEPS[step - 1].label}
+                {steps[step - 1].label}
               </span>
               <span className="text-sm text-[#888888]" style={{ fontFamily: "'Inter', sans-serif" }}>
                 {step} / 6
@@ -201,7 +170,7 @@ export default function MultiStepQuoteForm() {
               />
             </div>
             <div className="flex justify-between mt-2 gap-1">
-              {STEPS.map((s) => (
+              {steps.map((s) => (
                 <div
                   key={s.id}
                   className={`w-2 h-2 rounded-full flex-shrink-0 transition-colors ${
@@ -224,7 +193,7 @@ export default function MultiStepQuoteForm() {
                 transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
               />
               <p className="mt-4 text-[#888888]" style={{ fontFamily: "'Inter', sans-serif" }}>
-                Küldés...
+                {t.form.sending}
               </p>
             </div>
           ) : (
@@ -246,10 +215,10 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Melyik szolgáltatás érdekel?
+                        {t.form.step1Title}
                       </h3>
                       <div className="space-y-2">
-                        {STEP_1_OPTIONS.map((opt) => (
+                        {step1Options.map((opt) => (
                           <button
                             key={opt}
                             type="button"
@@ -275,10 +244,10 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Milyen típusú a céged?
+                        {t.form.step2Title}
                       </h3>
                       <div className="space-y-2">
-                        {STEP_2_OPTIONS.map((opt) => (
+                        {step2Options.map((opt) => (
                           <button
                             key={opt}
                             type="button"
@@ -304,12 +273,12 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Röviden írd le a projektet
+                        {t.form.step3Title}
                       </h3>
                       <textarea
                         value={projectDesc}
                         onChange={(e) => setProjectDesc(e.target.value)}
-                        placeholder="Pl. új weboldalt szeretnék az éttermemhez, és havi social tartalmakat..."
+                        placeholder={t.form.step3Placeholder}
                         rows={5}
                         className={`${inputBase} resize-none`}
                         style={{ fontFamily: "'Inter', sans-serif" }}
@@ -324,10 +293,10 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Költségkeret
+                        {t.form.step4Title}
                       </h3>
                       <div className="space-y-2">
-                        {STEP_4_OPTIONS.map((opt) => (
+                        {step4Options.map((opt) => (
                           <button
                             key={opt}
                             type="button"
@@ -353,10 +322,10 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Mikor kellene?
+                        {t.form.step5Title}
                       </h3>
                       <div className="space-y-2">
-                        {STEP_5_OPTIONS.map((opt) => (
+                        {step5Options.map((opt) => (
                           <button
                             key={opt}
                             type="button"
@@ -382,12 +351,12 @@ export default function MultiStepQuoteForm() {
                         className="text-lg font-semibold text-[#f5f5f5] mb-4"
                         style={{ fontFamily: "'Space Grotesk', sans-serif" }}
                       >
-                        Elérhetőségek
+                        {t.form.step6Title}
                       </h3>
                       <div className="space-y-4">
                         <div>
                           <label className="block text-sm text-[#888888] mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            Név *
+                            {t.form.nameLabel}
                           </label>
                           <input
                             type="text"
@@ -397,7 +366,7 @@ export default function MultiStepQuoteForm() {
                               if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
                             }}
                             className={`${inputBase} ${errors.name ? 'border-[#c8102e]' : ''}`}
-                            placeholder="Neved"
+                            placeholder={t.form.namePlaceholder}
                             style={{ fontFamily: "'Inter', sans-serif" }}
                           />
                           {errors.name && (
@@ -406,7 +375,7 @@ export default function MultiStepQuoteForm() {
                         </div>
                         <div>
                           <label className="block text-sm text-[#888888] mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            Email *
+                            {t.form.emailLabel}
                           </label>
                           <input
                             type="email"
@@ -416,7 +385,7 @@ export default function MultiStepQuoteForm() {
                               if (errors.email) setErrors((prev) => ({ ...prev, email: undefined }));
                             }}
                             className={`${inputBase} ${errors.email ? 'border-[#c8102e]' : ''}`}
-                            placeholder="email@pelda.hu"
+                            placeholder={t.form.emailPlaceholder}
                             style={{ fontFamily: "'Inter', sans-serif" }}
                           />
                           {errors.email && (
@@ -425,14 +394,14 @@ export default function MultiStepQuoteForm() {
                         </div>
                         <div>
                           <label className="block text-sm text-[#888888] mb-1.5" style={{ fontFamily: "'Inter', sans-serif" }}>
-                            Telefonszám
+                            {t.form.phoneLabel}
                           </label>
                           <input
                             type="tel"
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             className={inputBase}
-                            placeholder="+36 30 123 4567"
+                            placeholder={t.form.phonePlaceholder}
                             style={{ fontFamily: "'Inter', sans-serif" }}
                           />
                         </div>
@@ -451,7 +420,7 @@ export default function MultiStepQuoteForm() {
                     className="text-[#888888] hover:text-[#f5f5f5] transition-colors font-medium"
                     style={{ fontFamily: "'Inter', sans-serif" }}
                   >
-                    Vissza
+                    {t.form.back}
                   </button>
                 ) : (
                   <div />
@@ -464,7 +433,7 @@ export default function MultiStepQuoteForm() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  {step === 6 ? 'Küldés' : 'Tovább'}
+                  {step === 6 ? t.form.submit : t.form.next}
                 </motion.button>
               </div>
             </>

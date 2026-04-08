@@ -1,20 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-
-const MANIFESTO_LINES = [
-  'A legtöbb márka akkor aktív, amikor épp kampány van.',
-  'Mi akkor is dolgozunk, amikor nincs.',
-  'A jelenlét nem időszakos.',
-  'Vagy működik. Vagy nem.',
-  'Mi nem külön kezeljük a videót, a webet meg a socialt.',
-  'Egy rendszerben gondolkodunk.',
-  'Ha tartalmat csinálunk, annak célja van.',
-  'Ha webet építünk, az nem csak szép — hanem konvertál.',
-  'Ha jelen vagyunk, az nem véletlen.',
-  'Never Off. Always On.', // Special: red, bolder, larger
-  'Nem hype.',
-  'Folyamatos munka.',
-] as const;
+import { useT } from '../i18n/LanguageContext';
 
 const lineVariants = {
   hidden: { opacity: 0, y: 24 },
@@ -30,6 +16,7 @@ const lineVariants = {
 };
 
 export default function ManifestoSection() {
+  const t = useT();
   const ref = useRef<HTMLElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.15 });
 
@@ -59,7 +46,7 @@ export default function ManifestoSection() {
 
       <div className="relative max-w-4xl mx-auto px-6 md:px-10 lg:px-16">
         <div className="space-y-6 md:space-y-8 lg:space-y-10">
-          {MANIFESTO_LINES.map((line, i) => {
+          {t.manifesto.lines.map((line, i) => {
             const isHighlight = line === 'Never Off. Always On.';
             return (
               <motion.p
@@ -86,13 +73,13 @@ export default function ManifestoSection() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{
             duration: 0.6,
-            delay: MANIFESTO_LINES.length * 0.08 + 0.2,
+            delay: t.manifesto.lines.length * 0.08 + 0.2,
             ease: [0.22, 1, 0.36, 1],
           }}
           className="mt-16 md:mt-20 lg:mt-24 text-lg md:text-xl text-[#888888] max-w-2xl"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          Teljes digitális jelenlétet építünk vállalkozásoknak — a stratégiától a kivitelezésig.
+          {t.manifesto.summary}
         </motion.p>
       </div>
     </section>

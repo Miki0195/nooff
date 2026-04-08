@@ -1,25 +1,33 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-const LANGUAGES = ['HU', 'EN', 'DE', 'SK'] as const;
-type Language = (typeof LANGUAGES)[number];
-
-const NAV_LINKS = [
-  { label: 'Services', href: '#services' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
-] as const;
-
-function scrollToSection(href: string) {
-  const element = document.querySelector(href);
-  element?.scrollIntoView({ behavior: 'smooth' });
-}
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useT, useLang, LANGUAGES } from '../i18n/LanguageContext';
 
 export default function Navbar() {
-  const [activeLang, setActiveLang] = useState<Language>('HU');
+  const t = useT();
+  const { lang, setLang } = useLang();
+  const navLinks = [
+    { label: t.nav.services, href: '#services' },
+    { label: t.nav.projects, href: '#projects' },
+    { label: t.nav.about, href: '#about' },
+    { label: t.nav.contact, href: '#contact' },
+  ];
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isHome = location.pathname === '/';
+
+  function scrollToSection(href: string) {
+    if (isHome) {
+      const element = document.querySelector(href);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      navigate('/' + href);
+    }
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,8 +48,26 @@ export default function Navbar() {
     };
   }, [isMobileMenuOpen]);
 
+  useEffect(() => {
+    if (isHome && location.hash) {
+      setTimeout(() => {
+        const element = document.querySelector(location.hash);
+        element?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location, isHome]);
+
   const handleNavClick = (href: string) => {
     scrollToSection(href);
+    setIsMobileMenuOpen(false);
+  };
+
+  const goHome = () => {
+    if (isHome) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      navigate('/');
+    }
     setIsMobileMenuOpen(false);
   };
 
@@ -58,12 +84,8 @@ export default function Navbar() {
         style={{ borderBottomWidth: 1 }}
       >
         <nav className="flex items-center justify-between max-w-[1600px] mx-auto">
-          {/* Logo */}
           <button
-            onClick={() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-              setIsMobileMenuOpen(false);
-            }}
+            onClick={goHome}
             className="flex flex-col items-start group"
             aria-label="NO OFF Studio - Home"
           >
@@ -82,10 +104,9 @@ export default function Navbar() {
             </span>
           </button>
 
-          {/* Desktop nav + language switcher */}
           <div className="hidden lg:flex items-center gap-12">
             <ul className="flex items-center gap-10">
-              {NAV_LINKS.map((link) => (
+              {navLinks.map((link) => (
                 <li key={link.href}>
                   <button
                     onClick={() => handleNavClick(link.href)}
@@ -99,24 +120,23 @@ export default function Navbar() {
             </ul>
 
             <div className="flex items-center gap-1 pl-4 border-l border-white/10">
-              {LANGUAGES.map((lang) => (
+              {LANGUAGES.map((code) => (
                 <button
-                  key={lang}
-                  onClick={() => setActiveLang(lang)}
+                  key={code}
+                  onClick={() => setLang(code)}
                   className={`px-2 py-1 text-xs font-medium transition-colors duration-200 ${
-                    activeLang === lang
+                    lang === code
                       ? 'text-[#c8102e]'
                       : 'text-[#888888] hover:text-[#f5f5f5]/80'
                   }`}
                   style={{ fontFamily: "'Inter', sans-serif" }}
                 >
-                  {lang}
+                  {code}
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setIsMobileMenuOpen(true)}
             className="lg:hidden flex flex-col gap-1.5 p-2 -mr-2 text-[#f5f5f5]"
@@ -132,7 +152,6 @@ export default function Navbar() {
         </nav>
       </motion.header>
 
-      {/* Mobile full-screen overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -172,7 +191,7 @@ export default function Navbar() {
               </button>
 
               <ul className="flex flex-col items-center gap-8">
-                {NAV_LINKS.map((link, i) => (
+                {navLinks.map((link, i) => (
                   <motion.li
                     key={link.href}
                     initial={{ opacity: 0, y: 20 }}
@@ -200,17 +219,17 @@ export default function Navbar() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
               >
-                {LANGUAGES.map((lang) => (
+                {LANGUAGES.map((code) => (
                   <button
-                    key={lang}
-                    onClick={() => setActiveLang(lang)}
+                    key={code}
+                    onClick={() => setLang(code)}
                     className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-                      activeLang === lang
+                      lang === code
                         ? 'text-[#c8102e]'
                         : 'text-[#888888] hover:text-[#f5f5f5]/80'
                     }`}
                   >
-                    {lang}
+                    {code}
                   </button>
                 ))}
               </motion.div>

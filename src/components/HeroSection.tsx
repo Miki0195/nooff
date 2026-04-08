@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
+import { useT } from '../i18n/LanguageContext';
 
 function scrollToSection(id: string) {
   const element = document.querySelector(id);
@@ -7,6 +8,7 @@ function scrollToSection(id: string) {
 }
 
 export default function HeroSection() {
+  const t = useT();
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -178,7 +180,7 @@ export default function HeroSection() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Digitális jelenlét. Egy rendszerben.
+            {t.hero.subtitle}
           </motion.p>
 
           <motion.p
@@ -192,7 +194,7 @@ export default function HeroSection() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            Videó. Web. Social. Kampány.
+            {t.hero.tags}
           </motion.p>
 
           <motion.div
@@ -212,7 +214,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
-              Projektek
+              {t.hero.projectsBtn}
             </motion.button>
             <motion.button
               onClick={() => scrollToSection('#quote')}
@@ -221,7 +223,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
-              Ajánlatot kérek
+              {t.hero.quoteBtn}
             </motion.button>
           </motion.div>
         </div>
@@ -244,7 +246,7 @@ export default function HeroSection() {
           }}
         >
           <span className="text-[10px] tracking-[0.3em] uppercase">
-            Scroll
+            {t.hero.scroll}
           </span>
           <svg
             width="20"

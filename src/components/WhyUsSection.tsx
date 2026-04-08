@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useT } from '../i18n/LanguageContext';
 
 const containerVariants = {
   hidden: {},
@@ -34,22 +35,17 @@ const blockVariants = {
   },
 };
 
-const differentiators = [
-  {
-    number: '01',
-    statement: 'Nem sablonból dolgozunk.',
-  },
-  {
-    number: '02',
-    statement: 'Nem külön elemekben gondolkodunk, hanem rendszerben.',
-  },
-  {
-    number: '03',
-    statement: 'Nem félkész munkát adunk ki.',
-  },
-];
+const DIFF_NUMBERS = ['01', '02', '03'] as const;
 
 export default function WhyUsSection() {
+  const t = useT();
+  const titleParts = t.whyUs.title.split('\n');
+
+  const differentiators = DIFF_NUMBERS.map((number, i) => ({
+    number,
+    statement: t.whyUs.differentiators[i] ?? '',
+  }));
+
   return (
     <section
       className="py-24 md:py-32 px-6 md:px-10"
@@ -69,9 +65,12 @@ export default function WhyUsSection() {
             className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight text-[#f5f5f5]"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
           >
-            Nem minden cégnek van szüksége ránk.
-            <br />
-            De aki komolyan veszi a jelenlétét, annak igen.
+            {titleParts.map((part, i) => (
+              <span key={i}>
+                {i > 0 && <br />}
+                {part}
+              </span>
+            ))}
           </motion.h2>
 
           {/* Supporting lines */}
@@ -84,21 +83,21 @@ export default function WhyUsSection() {
               className="text-lg md:text-xl font-light text-[#f5f5f5]"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Mi nem tűnünk el két projekt között.
+              {t.whyUs.line1}
             </motion.p>
             <motion.p
               variants={itemVariants}
               className="text-lg md:text-xl font-light text-[#f5f5f5]"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Nem kapcsolunk ki.
+              {t.whyUs.line2}
             </motion.p>
             <motion.p
               variants={itemVariants}
               className="text-lg md:text-xl font-bold text-[#c8102e]"
               style={{ fontFamily: "'Inter', sans-serif" }}
             >
-              Never Off. Always On.
+              {t.whyUs.tagline}
             </motion.p>
           </motion.div>
 

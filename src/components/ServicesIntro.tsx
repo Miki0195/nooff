@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useT } from '../i18n/LanguageContext';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -10,6 +11,7 @@ const fadeUp = {
 };
 
 export default function ServicesIntro() {
+  const t = useT();
   return (
     <div id="services" className="py-24 md:py-32">
       <div className="max-w-3xl mx-auto text-center px-6">
@@ -30,10 +32,10 @@ export default function ServicesIntro() {
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           <motion.span className="block" variants={fadeUp}>
-            Nem kampányokban gondolkodunk.
+            {t.servicesIntro.line1}
           </motion.span>
           <motion.span className="block mt-2" variants={fadeUp}>
-            Rendszerben gondolkodunk.
+            {t.servicesIntro.line2}
           </motion.span>
         </motion.h2>
         <motion.p
@@ -44,7 +46,7 @@ export default function ServicesIntro() {
           className="mt-6 text-lg text-[#888888]"
           style={{ fontFamily: "'Inter', sans-serif" }}
         >
-          Itt kapcsolódik össze minden.
+          {t.servicesIntro.subtitle}
         </motion.p>
       </div>
     </div>
