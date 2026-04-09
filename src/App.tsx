@@ -4,6 +4,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import HomePage from './components/HomePage'
 import ServiceDetailPage from './components/ServiceDetailPage'
+import LegalPage from './components/LegalPage'
 
 function ScrollRestoration() {
   const { pathname, hash } = useLocation()
@@ -33,6 +34,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/szolgaltatas/:serviceId" element={<ServiceDetailPage />} />
+          <Route path="/impresszum" element={<LegalPage type="imprint" />} />
+          <Route path="/adatvedelem" element={<LegalPage type="privacy" />} />
         </Routes>
       </main>
       <Footer />

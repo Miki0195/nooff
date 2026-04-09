@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useT } from '../i18n/LanguageContext';
 
 const SOCIAL_LINKS = [
@@ -145,18 +145,18 @@ export default function Footer() {
               {t.footer.copyright}
             </p>
             <div className="flex items-center gap-6">
-              <a
-                href="#"
+              <Link
+                to="/impresszum"
                 className="text-xs text-[#888888] hover:text-[#f5f5f5] transition-colors duration-200"
               >
                 {t.footer.imprint}
-              </a>
-              <a
-                href="#"
+              </Link>
+              <Link
+                to="/adatvedelem"
                 className="text-xs text-[#888888] hover:text-[#f5f5f5] transition-colors duration-200"
               >
                 {t.footer.privacy}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

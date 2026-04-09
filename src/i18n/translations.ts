@@ -1,3 +1,8 @@
+import {
+  imprintHU, privacyHU, imprintEN, privacyEN,
+  imprintDE, privacyDE, imprintSK, privacySK,
+} from './legalContent';
+
 export type Lang = 'HU' | 'EN' | 'DE' | 'SK';
 
 export interface Translations {
@@ -93,6 +98,7 @@ export interface Translations {
     copyright: string;
     imprint: string;
     privacy: string;
+    backToHome: string;
   };
   serviceDetail: {
     back: string;
@@ -106,6 +112,16 @@ export interface Translations {
     notFoundTitle: string;
     notFoundText: string;
     notFoundBtn: string;
+  };
+  imprint: {
+    title: string;
+    lastUpdated: string;
+    sections: { heading: string; content: string[] }[];
+  };
+  privacy: {
+    title: string;
+    lastUpdated: string;
+    sections: { heading: string; content: string[] }[];
   };
   services: {
     content: {
@@ -256,6 +272,7 @@ const hu: Translations = {
     copyright: '© 2026 NO OFF Studio. Minden jog fenntartva.',
     imprint: 'Impresszum',
     privacy: 'Adatvédelem',
+    backToHome: 'Vissza a főoldalra',
   },
   serviceDetail: {
     back: 'Szolgáltatások',
@@ -270,6 +287,8 @@ const hu: Translations = {
     notFoundText: 'Ez a szolgáltatás nem található.',
     notFoundBtn: 'Vissza a szolgáltatásokhoz',
   },
+  imprint: imprintHU,
+  privacy: privacyHU,
   services: {
     content: {
       title: 'Havi social média tartalom gyártás',
@@ -461,6 +480,7 @@ const en: Translations = {
     copyright: '© 2026 NO OFF Studio. All rights reserved.',
     imprint: 'Imprint',
     privacy: 'Privacy Policy',
+    backToHome: 'Back to home',
   },
   serviceDetail: {
     back: 'Services',
@@ -475,6 +495,8 @@ const en: Translations = {
     notFoundText: 'This service was not found.',
     notFoundBtn: 'Back to services',
   },
+  imprint: imprintEN,
+  privacy: privacyEN,
   services: {
     content: {
       title: 'Monthly social media content',
@@ -666,6 +688,7 @@ const de: Translations = {
     copyright: '© 2026 NO OFF Studio. Alle Rechte vorbehalten.',
     imprint: 'Impressum',
     privacy: 'Datenschutz',
+    backToHome: 'Zurück zur Startseite',
   },
   serviceDetail: {
     back: 'Leistungen',
@@ -680,6 +703,8 @@ const de: Translations = {
     notFoundText: 'Diese Leistung wurde nicht gefunden.',
     notFoundBtn: 'Zurück zu Leistungen',
   },
+  imprint: imprintDE,
+  privacy: privacyDE,
   services: {
     content: {
       title: 'Monatliche Social-Media-Inhalte',
@@ -871,6 +896,7 @@ const sk: Translations = {
     copyright: '© 2026 NO OFF Studio. Všetky práva vyhradené.',
     imprint: 'Impressum',
     privacy: 'Ochrana údajov',
+    backToHome: 'Späť na hlavnú stránku',
   },
   serviceDetail: {
     back: 'Služby',
@@ -885,6 +911,8 @@ const sk: Translations = {
     notFoundText: 'Táto služba nebola nájdená.',
     notFoundBtn: 'Späť na služby',
   },
+  imprint: imprintSK,
+  privacy: privacySK,
   services: {
     content: {
       title: 'Mesačná tvorba obsahu pre social médiá',

@@ -545,6 +545,7 @@ export default function MultiStepQuoteForm() {
                             ref={captchaRef}
                             sitekey={HCAPTCHA_SITEKEY}
                             theme="dark"
+                            sentry={false}
                             onVerify={(token) => { setHcaptchaToken(token); clearStepError(); }}
                             onExpire={() => setHcaptchaToken('')}
                           />
